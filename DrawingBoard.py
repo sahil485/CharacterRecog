@@ -10,7 +10,7 @@ from tensorflow.keras.layers import MaxPooling2D
 from tensorflow.keras.callbacks import Callback
 from tensorflow.keras.datasets import mnist
 import numpy as np
-
+import time
 
 class Callback(Callback): #callback class from predefined keras superclass: stops training once accuracy is 95%
     def on_epoch_end(self, epochs, logs={}):
@@ -40,39 +40,6 @@ def myfunction(event): #function to track which is used in tandem with the tkint
         canvas.create_line((x, y, init_x, init_y), fill = color, width = 8)
     canvas.old_coords = x, y
 
-
-color = "black"
-counter = 0
-
-root = tk.Tk() #creates a tkinter object
-
-canvas = tk.Canvas(root, bg ='black', width=400, height=400) #creates tkinter canvas object of size 400x400 with black background
-canvas.pack()
-canvas.old_coords = None
-
-
-root.bind('<Motion>', myfunction) #binds mouse movement for drawing and mouse left-clicking for starting/stopping drawing
-root.bind('<Button-1>', turnVisible)
-
-root.mainloop() #allows changes to canvas until it is closed
-
-# Opens a image in RGB mode
-im = Image.open(r'C:\Users\Sahil\Data\Numbers\TkinterWindow.jpg')
-original_file_path = r'C:\Users\Sahil\Data\Numbers\TkinterWindow.jpg'
-
-width, height = im.size
-
-left = 5
-top = 50
-right = width
-bottom = height
-
-im1 = im.crop((left, top, right, bottom)) #crops screenshot of tkinter window to exclude the top 'label-bar'
-#im1.show()
-
-im1 = im1.resize((28,28)) #resizes the cropped screenshot to a format exceptable by the neural network and saves it locally
-im1.save('resizedTkinter.jpg')
-
 (td, tl), (testd, testl) = mnist.load_data() #loads and reshapes the MNIST data set
 
 td = td/255.0
@@ -83,9 +50,9 @@ testd = testd.reshape(10000,28,28,1)
 
 network = Sequential([ #creates a sequential CNN with various conv, pooling, and dense layers
     Conv2D(16, (3,3), activation = tf.nn.relu, input_shape= (28, 28, 1)),
-    MaxPooling2D(2,2),
     Conv2D(32, (3,3), activation = tf.nn.relu),
     MaxPooling2D(2,2),
+    Conv2D(32, (3,3,), activation = tf.nn.relu),
     Conv2D(64,(3,3), activation = tf.nn.relu),
     MaxPooling2D(2,2),
     Flatten(),
@@ -97,9 +64,50 @@ network.compile(optimizer = 'adam', loss = 'sparse_categorical_crossentropy',met
 network.fit(td, tl, epochs = 20, callbacks = [CallbackTraining])
 network.evaluate(testd, testl) #evaluates the performance of the network using the MNIST test data
 
-im = Image.open('resizedTkinter.jpg').convert('L') #opens the screenshot of the cropped canvas drawing as grayscale image
-im1 = im.resize((28, 28))#resizes/reshapes the image for compatibility with the NN
-im1 = np.reshape(im,[1, 28, 28, 1])
+userHappy = True
 
-array = max(network.predict(im1))
-print('The number is ', np.argmax(array)) #prints the classification of the number as a digit from 0-9
+while(userHappy): #user can repeatedly draw digits until the program is stopped 
+
+    color = "black"
+    counter = 0
+
+    root = tk.Tk() #creates a tkinter object
+
+    canvas = tk.Canvas(root, bg ='black', width=400, height=400) #creates tkinter canvas object of size 400x400 with black background
+    canvas.pack()
+    canvas.old_coords = None
+
+
+    root.bind('<Motion>', myfunction) #binds mouse movement for drawing and mouse left-clicking for starting/stopping drawing
+    root.bind('<Button-1>', turnVisible)
+
+    root.mainloop() #allows changes to canvas until it is closed
+
+    # Opens a image in RGB mode
+    im = Image.open(r'C:\Users\Sahil\Data\Numbers\TkinterWindow.jpg')
+    original_file_path = r'C:\Users\Sahil\Data\Numbers\TkinterWindow.jpg'
+
+    width, height = im.size
+
+    left = 5
+    top = 50
+    right = width
+    bottom = height
+
+    im1 = im.crop((left, top, right, bottom)) #crops screenshot of tkinter window to exclude the top 'label-bar'
+    #im1.show()
+
+    im1 = im1.resize((28,28)) #resizes the cropped screenshot to a format exceptable by the neural network and saves it locally
+    im1.save('resizedTkinter.jpg')
+
+
+    im = Image.open('resizedTkinter.jpg').convert('L') #opens the screenshot of the cropped canvas drawing as grayscale image
+    im1 = im.resize((28, 28))#resizes/reshapes the image for compatibility with the NN
+    im1 = np.reshape(im,[1, 28, 28, 1])
+
+    array = max(network.predict(im1))
+
+    network.summary()
+
+    print('The number is ', np.argmax(array)) #prints the classification of the number as a digit from 0-9
+    time.sleep(1) #sets a delay so that users are not bombarded by tkinter popup window

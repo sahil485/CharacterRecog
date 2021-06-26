@@ -46,6 +46,9 @@ def myfunction(event): #function to track which is used in tandem with the tkint
         canvas.create_line((x, y, init_x, init_y), fill = color, width = 8)
     canvas.old_coords = x, y
 
+def close(event):
+    exit()
+
 (td, tl), (testd, testl) = mnist.load_data() #loads and reshapes the MNIST data set
 
 td = td/255.0
@@ -56,11 +59,11 @@ testd = testd.reshape(10000,28,28,1)
 
 network = Sequential([ #creates a sequential CNN with various conv, pooling, dropout, and dense layers
     Conv2D(16, (3,3), activation = tf.nn.relu, input_shape= (28, 28, 1)),
-    Dropout(0.2),
+    Dropout(0.4),
     Conv2D(32, (3,3), activation = tf.nn.relu),
     MaxPooling2D(2,2),
     Conv2D(32, (3,3,), activation = tf.nn.relu),
-    Dropout(0.2),
+    Dropout(0.4),
     Conv2D(64,(3,3), activation = tf.nn.relu),
     MaxPooling2D(2,2),
     Flatten(),
@@ -88,7 +91,8 @@ while(userHappy): #user can repeatedly draw digits until the program is stopped
 
     root.bind('<Motion>', myfunction) #binds mouse movement for drawing and mouse left-clicking for starting/stopping drawing
     root.bind('<Button-1>', turnVisible)
-    root.mainloop() #allows changes to canvas until it is closed
+    root.bind('<Delete>', close)
+    root.mainloop() #allows binds to act on canvas until it is closed
 
     # Opens a image in RGB mode
     im = Image.open(r'C:\Users\Sahil\Data\Numbers\TkinterWindow.jpg')

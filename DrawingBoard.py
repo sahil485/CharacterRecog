@@ -66,7 +66,7 @@ network.evaluate(testd, testl) #evaluates the performance of the network using t
 
 userHappy = True
 
-while(userHappy): #user can repeatedly draw digits until the program is stopped 
+while(userHappy): #user can repeatedly draw digits until the program is stopped
 
     color = "black"
     counter = 0
@@ -106,8 +106,6 @@ while(userHappy): #user can repeatedly draw digits until the program is stopped
     im1 = np.reshape(im,[1, 28, 28, 1])
 
     array = max(network.predict(im1))
-
-    network.summary()
 
     print('The number is ', np.argmax(array)) #prints the classification of the number as a digit from 0-9
     time.sleep(1) #sets a delay so that users are not bombarded by tkinter popup window

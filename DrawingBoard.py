@@ -7,10 +7,16 @@ from tensorflow.keras.layers import Dense
 from tensorflow.keras import Sequential
 from tensorflow.keras.layers import Conv2D
 from tensorflow.keras.layers import MaxPooling2D
+from tensorflow.keras.layers import Dropout
 from tensorflow.keras.callbacks import Callback
 from tensorflow.keras.datasets import mnist
 import numpy as np
-import time
+from time import sleep
+from sys import exit
+
+
+#NOTE: To draw a number on the canvas, you must draw it in one mouse stroke: left-click once to start drawing and once again to stop
+
 
 class Callback(Callback): #callback class from predefined keras superclass: stops training once accuracy is 95%
     def on_epoch_end(self, epochs, logs={}):
@@ -48,11 +54,13 @@ testd = testd/255.0
 td = td.reshape(60000, 28, 28, 1)
 testd = testd.reshape(10000,28,28,1)
 
-network = Sequential([ #creates a sequential CNN with various conv, pooling, and dense layers
+network = Sequential([ #creates a sequential CNN with various conv, pooling, dropout, and dense layers
     Conv2D(16, (3,3), activation = tf.nn.relu, input_shape= (28, 28, 1)),
+    Dropout(0.2),
     Conv2D(32, (3,3), activation = tf.nn.relu),
     MaxPooling2D(2,2),
     Conv2D(32, (3,3,), activation = tf.nn.relu),
+    Dropout(0.2),
     Conv2D(64,(3,3), activation = tf.nn.relu),
     MaxPooling2D(2,2),
     Flatten(),
@@ -80,7 +88,6 @@ while(userHappy): #user can repeatedly draw digits until the program is stopped
 
     root.bind('<Motion>', myfunction) #binds mouse movement for drawing and mouse left-clicking for starting/stopping drawing
     root.bind('<Button-1>', turnVisible)
-
     root.mainloop() #allows changes to canvas until it is closed
 
     # Opens a image in RGB mode
@@ -95,7 +102,6 @@ while(userHappy): #user can repeatedly draw digits until the program is stopped
     bottom = height
 
     im1 = im.crop((left, top, right, bottom)) #crops screenshot of tkinter window to exclude the top 'label-bar'
-    #im1.show()
 
     im1 = im1.resize((28,28)) #resizes the cropped screenshot to a format exceptable by the neural network and saves it locally
     im1.save('resizedTkinter.jpg')
@@ -108,4 +114,4 @@ while(userHappy): #user can repeatedly draw digits until the program is stopped
     array = max(network.predict(im1))
 
     print('The number is ', np.argmax(array)) #prints the classification of the number as a digit from 0-9
-    time.sleep(1) #sets a delay so that users are not bombarded by tkinter popup window
+    sleep(1) #sets a delay so that users are not bombarded by tkinter popup window

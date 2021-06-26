@@ -59,11 +59,11 @@ testd = testd.reshape(10000,28,28,1)
 
 network = Sequential([ #creates a sequential CNN with various conv, pooling, dropout, and dense layers
     Conv2D(16, (3,3), activation = tf.nn.relu, input_shape= (28, 28, 1)),
-    Dropout(0.4),
+    Dropout(0.3),
     Conv2D(32, (3,3), activation = tf.nn.relu),
     MaxPooling2D(2,2),
     Conv2D(32, (3,3,), activation = tf.nn.relu),
-    Dropout(0.4),
+    Dropout(0.3),
     Conv2D(64,(3,3), activation = tf.nn.relu),
     MaxPooling2D(2,2),
     Flatten(),

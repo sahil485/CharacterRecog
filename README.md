@@ -3,6 +3,5 @@ One of my first personal ML projects using Python's Tensorflow Keras and Tkinter
 
 References: 
 
-https://github.com/machinecurve/extra_keras_datasets
-https://github.com/ghanteyyy/tkcap 
+https://github.com/machinecurve/extra_keras_datasets - https://github.com/ghanteyyy/tkcap 
 

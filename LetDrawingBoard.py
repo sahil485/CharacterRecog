@@ -16,14 +16,6 @@ from time import sleep
 
 #NOTE: To draw a number on the canvas, you must draw it in one mouse stroke: left-click once to start drawing and once again to stop
 
-
-class Callback(Callback): #callback class from predefined keras superclass: stops training once accuracy is 95%
-    def on_epoch_end(self, epochs, logs={}):
-        if(logs.get('accuracy') > 0.9):
-            self.model.stop_training = True
-
-CallbackTraining = Callback()
-
 def turnVisible(event): #reads clicks of the mouse to enable users to draw a digit on the canvas (after first click) and "freeze" the canvas after the second screen
     global color, counter, root #also starts training of the NN after second click
     counter+=1
@@ -57,7 +49,7 @@ testd = testd/255.0
 td = td.reshape(124800, 28, 28, 1)
 testd = testd.reshape(20800,28,28,1)
 
-network = tf.keras.models.load_model('LettersNetwork')
+network= tf.keras.models.load_model('LettersNetwork')
 
 userHappy = True
 

@@ -58,7 +58,6 @@ td = td.reshape(60000, 28, 28, 1)
 testd = testd.reshape(10000,28,28,1)
 
 network = tf.keras.models.load_model('DigitsNetwork')
-
 userHappy = True
 
 while(userHappy): #user can repeatedly draw digits until the program is stopped

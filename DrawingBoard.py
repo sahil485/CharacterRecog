@@ -10,10 +10,8 @@ from tensorflow.keras.layers import MaxPooling2D
 from tensorflow.keras.layers import Dropout
 from tensorflow.keras.callbacks import Callback
 from tensorflow.keras.datasets import mnist
-import extra_keras_datasets.extra_keras_datasets.emnist as emnist
 import numpy as np
 from time import sleep
-from sys import exit
 
 
 #NOTE: To draw a number on the canvas, you must draw it in one mouse stroke: left-click once to start drawing and once again to stop

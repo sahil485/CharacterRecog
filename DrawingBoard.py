@@ -10,6 +10,7 @@ from tensorflow.keras.layers import MaxPooling2D
 from tensorflow.keras.layers import Dropout
 from tensorflow.keras.callbacks import Callback
 from tensorflow.keras.datasets import mnist
+import extra_keras_datasets.extra_keras_datasets.emnist as emnist
 import numpy as np
 from time import sleep
 from sys import exit
@@ -46,8 +47,9 @@ def myfunction(event): #function to track which is used in tandem with the tkint
         canvas.create_line((x, y, init_x, init_y), fill = color, width = 8)
     canvas.old_coords = x, y
 
-def close(event):
-    exit()
+def userSad(event):
+    global userHappy
+    userHappy = False
 
 (td, tl), (testd, testl) = mnist.load_data() #loads and reshapes the MNIST data set
 
@@ -91,7 +93,7 @@ while(userHappy): #user can repeatedly draw digits until the program is stopped
 
     root.bind('<Motion>', myfunction) #binds mouse movement for drawing and mouse left-clicking for starting/stopping drawing
     root.bind('<Button-1>', turnVisible)
-    root.bind('<Delete>', close)
+    root.bind('<Button-3>', userSad)
     root.mainloop() #allows binds to act on canvas until it is closed
 
     # Opens a image in RGB mode

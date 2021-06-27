@@ -45,7 +45,7 @@ def myfunction(event): #function to track which is used in tandem with the tkint
         canvas.create_line((x, y, init_x, init_y), fill = color, width = 8)
     canvas.old_coords = x, y
 
-def userSad(event):
+def userSad(event): #falsifies while loop truth condition to end drawing session
     global userHappy
     userHappy = False
 

@@ -12,18 +12,21 @@ from tensorflow.keras.callbacks import Callback
 from tensorflow.keras.datasets import mnist
 import numpy as np
 from time import sleep
+import matplotlib.pyplot as plot
+from sys import exit
 
 
 #NOTE: To draw a number on the canvas, you must draw it in one mouse stroke: left-click once to start drawing and once again to stop
 
 def turnVisible(event): #reads clicks of the mouse to enable users to draw a digit on the canvas (after first click) and "freeze" the canvas after the second screen
-    global color, counter, root #also starts training of the NN after second click
-    counter+=1
+    global color, clickCounter, root, total #also starts training of the NN after second click
+    clickCounter+=1
     if(color == "black"):
         color = "white"
     else:
         color = "black"
-    if(counter >= 2):
+    if(clickCounter >= 2):
+        total+= 1
         root.unbind('<Button-1>') #unbinds motion and left mouse clicking for drawing so that only the number can appear on the canvas
         root.unbind('<Motion>')
         cap = tkcap.CAP(root) #use of tkcap repo to screenshot the tkinter window
@@ -37,9 +40,24 @@ def myfunction(event): #function to track which is used in tandem with the tkint
         canvas.create_line((x, y, init_x, init_y), fill = color, width = 8)
     canvas.old_coords = x, y
 
-def userSad(event): #falsifies while loop truth condition to end drawing session
-    global userHappy
-    userHappy = False
+def modelSummary(event): #falsifies while loop truth condition to end drawing session
+    global incorrect, total, root
+    root.destroy()
+    values = np.array([incorrect, total-incorrect])
+    labels = ["Incorrect", "Correct"]
+    plot.pie(values, labels = labels,  autopct='%1.1f%%')
+    plot.legend()
+    plot.show()
+    exit()
+
+
+
+
+def countIncorrects(event):
+    global incorrect, root
+    incorrect += 1
+    root.unbind('x')
+    print('Incorrects',incorrect)
 
 (td, tl), (testd, testl) = mnist.load_data() #loads and reshapes the MNIST data set
 
@@ -51,12 +69,12 @@ testd = testd.reshape(10000,28,28,1)
 
 network = tf.keras.models.load_model('DigitsNetwork')
 userHappy = True
-
+incorrect= 0
+total = 0
 while(userHappy): #user can repeatedly draw digits until the program is stopped
 
     color = "black"
-    counter = 0
-
+    clickCounter = 0
     root = tk.Tk() #creates a tkinter object
 
     canvas = tk.Canvas(root, bg ='black', width=400, height=400) #creates tkinter canvas object of size 400x400 with black background
@@ -66,7 +84,8 @@ while(userHappy): #user can repeatedly draw digits until the program is stopped
 
     root.bind('<Motion>', myfunction) #binds mouse movement for drawing and mouse left-clicking for starting/stopping drawing
     root.bind('<Button-1>', turnVisible)
-    root.bind('<Button-3>', userSad)
+    root.bind('x', countIncorrects) #counts incorrect classifications with mouse scroll button click
+    root.bind('<Button-3>', modelSummary) #brings up model summary and exits code upon deletion of that window
     root.mainloop() #allows binds to act on canvas until it is closed
 
     # Opens a image in RGB mode

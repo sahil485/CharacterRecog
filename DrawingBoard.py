@@ -57,7 +57,6 @@ def countIncorrects(event):
     global incorrect, root
     incorrect += 1
     root.unbind('x')
-    print('Incorrects',incorrect)
 
 (td, tl), (testd, testl) = mnist.load_data() #loads and reshapes the MNIST data set
 
